@@ -5,15 +5,36 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Http\Resources\ProductResource;
+use App\Interfaces\ProductRepositoryInterface;
+use App\Traits\ApiResponse;
 
 class ProductController extends Controller
 {
+    use ApiResponse;
+
+    /**
+     * The product repository instance.
+     *
+     * @var ProductRepositoryInterface
+     */
+
+    private ProductRepositoryInterface $productRepositoryInterface;
+    
+    public function __construct(ProductRepositoryInterface $productRepositoryInterface)
+    {
+        $this->productRepositoryInterface = $productRepositoryInterface;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $data = $this->productRepositoryInterface->getAllProducts();
+
+        return $this->sendResponse(ProductResource::collection($data), 'Products retrieved successfully.'); 
+    
     }
 
     /**
