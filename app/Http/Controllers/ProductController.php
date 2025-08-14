@@ -56,9 +56,16 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show($id)
     {
         //
+        $product = $this->productRepositoryInterface->getProductById($id);
+        
+        if (!$product) {
+            return $this->sendError('Product not found.');
+        }
+
+        return $this->sendResponse(new ProductResource($product), 'Product retrieved successfully.');
     }
 
     /**
