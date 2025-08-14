@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Interfaces\ProductRepositoryInterface;
 use App\Traits\ApiResponse;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -51,6 +52,23 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         //
+        $validatedData = $request->validated();
+
+        DB::beginTransaction();
+
+        try {
+           
+            $product = $this->productRepositoryInterface->createProduct($validatedData);
+
+            DB::commit();
+            return $this->sendResponse(new ProductResource($product), 'Product created successfully.');
+
+        } catch (\Exception $e) {
+
+            return $this->rollback($e);
+            
+        }
+        
     }
 
     /**
