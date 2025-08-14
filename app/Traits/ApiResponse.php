@@ -8,18 +8,20 @@ use Illuminate\Support\Facades\Log;
 
 trait ApiResponse
 {
-    public static function rollback($e, $message = 'Something went wrong! Process not completed.')
+    public static function rollback($e, $message = 'Something went wrong! Process not completed.', $code = 500)
     {
         DB::rollback();
-        self::throwError($e, $message);
+        self::throwError($e, $message, $code);
     }
 
-    public static function throwError($e, $message = 'Something went wrong! Process not completed.')
+    public static function throwError($e, $message = 'Something went wrong! Process not completed.', $code = 500)
     {
-        Log::info($e);
+        Log::error($e);
         throw new HttpResponseException(response()->json([
+            'success' => false,
             'message' => $message,
-        ], 500));
+            'code'  => $code,
+        ], $code));
     }
 
     public function sendResponse($result, $message, $code = 200)
@@ -27,6 +29,7 @@ trait ApiResponse
         $response = [
             'success' => true,
             'data' => $result,
+            'code'  => $code,
         ];
 
         if (!empty($message)) {
