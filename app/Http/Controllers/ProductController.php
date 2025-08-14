@@ -128,8 +128,28 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy($id)
     {
         //
+        DB::beginTransaction();
+
+        try {
+
+            $deleted = $this->productRepositoryInterface->deleteProduct($id);
+
+            if (!$deleted) {
+                DB::rollback();
+                return $this->sendError('Product not found or not deleted.');
+            }
+
+            DB::commit();
+
+            return $this->sendResponse([], 'Product deleted successfully.');
+
+        } catch (\Exception $e) {
+
+            return $this->rollback($e);
+        }
+
     }
 }
