@@ -1,61 +1,234 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Laravel REST API CRUD
 
-## About Laravel
+A simple REST API built with **Laravel** for performing **CRUD operations** on products. This project uses **Repository Pattern**, **ApiResponse trait**, and includes **error handling** with database transactions.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Summary
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+🎉 This project allows you to:
 
-## Learning Laravel
+- **Create** new products
+- **Read** product details or list all products
+- **Update** product information
+- **Delete** products
+- Use proper API responses with `sendResponse` and `sendError`
+- Handle errors gracefully using **rollback** on exceptions
+- Separate business logic using **Repository Pattern**
+- Test all endpoints using **Postman**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Next steps could include:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- Extending the API to other resources
+- Implementing authentication and authorization
+- Optimizing responses with pagination and filters
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## Requirements
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- PHP >= 8.0  
+- Composer  
+- Laravel 10  
+- MySQL or any other supported database  
+- Postman (for API testing)  
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Installation & Setup
 
-## Contributing
+1. **Clone the repository**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+git clone https://github.com/jcsoliman07/laravel-rest-api-crud.git
+cd laravel-rest-api-crud
+```
 
-## Code of Conduct
+2. **Install dependencies**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+composer install
+```
 
-## Security Vulnerabilities
+3. **Copy `.env` file and configure environment variables**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+cp .env.example .env
+```
 
-## License
+Update the `.env` file with your database configuration:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```dotenv
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database_name
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
+
+4. **Generate application key**
+
+```bash
+php artisan key:generate
+```
+
+5. **Run migrations**
+
+```bash
+php artisan migrate
+```
+
+6. **Run the application**
+
+```bash
+php artisan serve
+```
+
+By default, your API will be accessible at:  
+```
+http://127.0.0.1:8000
+```
+
+---
+
+## API Endpoints
+
+All API endpoints are prefixed with `/api`.  
+
+| Method | Endpoint          | Description                | Body / Params                        |
+|--------|-----------------|----------------------------|--------------------------------------|
+| GET    | `/api/products`  | Get all products           | None                                 |
+| GET    | `/api/products/{id}` | Get a single product by ID | URL param: `id`                      |
+| POST   | `/api/products`  | Create a new product       | form-data: `name`, `price`, `description` |
+| PUT    | `/api/products/{id}` | Update a product by ID     | URL param: `id`, form-data: `name`, `price`, `description` |
+| DELETE | `/api/products/{id}` | Delete a product by ID     | URL param: `id`                      |
+
+---
+
+## Sample API Response
+
+### Success
+
+```json
+{
+  "success": true,
+  "message": "Product retrieved successfully",
+  "data": {
+    "id": 1,
+    "name": "Sample Product",
+    "price": 100,
+    "description": "This is a sample product",
+    "created_at": "2025-08-14T12:00:00",
+    "updated_at": "2025-08-14T12:00:00"
+  }
+}
+```
+
+### Error
+
+```json
+{
+  "success": false,
+  "message": "Product not found",
+  "data": null
+}
+```
+
+---
+
+## Postman Setup (form-data)
+
+1. Open **Postman**.
+2. Create a **new collection**, e.g., `Laravel REST API CRUD`.
+3. Add the following requests to the collection:
+
+- **Get All Products**  
+  - Method: GET  
+  - URL: `http://127.0.0.1:8000/api/products`  
+
+- **Get Product by ID**  
+  - Method: GET  
+  - URL: `http://127.0.0.1:8000/api/products/{id}`  
+
+- **Create Product**  
+  - Method: POST  
+  - URL: `http://127.0.0.1:8000/api/products`  
+  - Body: **form-data**  
+    | Key          | Value                  | Type   |
+    |--------------|-----------------------|--------|
+    | `name`       | New Product           | Text   |
+    | `price`      | 150                   | Text   |
+    | `description`| Product description here | Text   |
+
+- **Update Product**  
+  - Method: PUT  
+  - URL: `http://127.0.0.1:8000/api/products/{id}`  
+  - Body: **form-data**  
+    | Key          | Value                  | Type   |
+    |--------------|-----------------------|--------|
+    | `name`       | Updated Product       | Text   |
+    | `price`      | 200                   | Text   |
+    | `description`| Updated description here | Text   |
+
+- **Delete Product**  
+  - Method: DELETE  
+  - URL: `http://127.0.0.1:8000/api/products/{id}`  
+
+4. Test each request and verify responses.
+
+---
+
+## Project Structure
+
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   ├── Controller.php           # Base controller
+│   │   └── ProductController.php    # Handles product API endpoints
+│   ├── Requests/
+│   │   ├── StoreProductRequest.php  # Validates creating products
+│   │   └── UpdateProductRequest.php # Validates updating products
+│   └── Resources/
+│       └── ProductResource.php      # Formats API responses for products
+├── Interfaces/
+│   └── ProductRepositoryInterface.php # Defines repository methods for products
+├── Models/
+│   ├── Product.php                   # Product model
+│   └── User.php                      # User model (possibly for authentication)
+├── Policies/
+│   └── (currently empty)             # Can be used for authorization
+├── Providers/
+│   ├── AppServiceProvider.php        # Default Laravel provider
+│   └── RepositoryServiceProvider.php # Binds interfaces to repository implementations
+├── Repositories/
+│   └── ProductRepository.php         # Implementation of product repository
+└── Traits/
+    └── ApiResponse.php               # Handles standard API response format
+
+```
+
+---
+
+## Notes
+
+- All operations use **database transactions** to ensure data integrity.
+- Responses follow a **standard JSON format** using `ApiResponse` trait.
+- Repository pattern helps separate **data access logic** from controllers for cleaner code.
+
+---
+
+## Next Steps
+
+- Add **user authentication** (Laravel Sanctum or Passport)
+- Add **pagination**, **search**, or **filters** for large datasets
+- Extend API to handle **categories**, **orders**, or other resources
+
+---
+
+## Author
+
+**Jomar Soliman**  
+GitHub: [jcsoliman07](https://github.com/jcsoliman07)
