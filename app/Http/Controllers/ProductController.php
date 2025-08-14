@@ -66,7 +66,7 @@ class ProductController extends Controller
         } catch (\Exception $e) {
 
             return $this->rollback($e);
-            
+
         }
         
     }
@@ -97,9 +97,32 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateProductRequest $request, $id)
     {
         //
+        $validatedData = $request->validated();
+
+        DB::beginTransaction();
+
+        try{
+
+            $updatedProduct = $this->productRepositoryInterface->updateProduct($id, $validatedData);
+
+            if (!$updatedProduct) {
+
+                DB::rollback();
+                return $this->sendError('Product not found or not updated.');
+
+            }
+
+            DB::commit();
+
+            return $this->sendResponse(new ProductResource($updatedProduct), 'Product updated successfully.');
+
+        }catch(\Exception $e) {
+
+            return $this->rollback($e);
+        }
     }
 
     /**
