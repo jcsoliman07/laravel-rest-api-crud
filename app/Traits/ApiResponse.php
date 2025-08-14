@@ -39,4 +39,16 @@ trait ApiResponse
         return response()->json($response, $code);
     }
 
+    public function sendError($message, $code = 404, $data = null)
+    {
+        $response = [
+            'success' => false,
+            'message' => $message,
+            'data' => $data,
+            'code'  => $code,
+        ];
+
+        return response()->json($response, $code);
+    }
+
 }
